@@ -42,47 +42,26 @@ All responses follow the original Rick and Morty API structure.
 
 ## Quick Start (Local Development)
 
+### 1. Clone the repository
 ```bash
-# 1. Clone the repository
 git clone https://github.com/bashyrov/rick-and-morty-api.git
 cd rick-and-morty-api
+```
 
-# 2. Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate        # Linux/Mac
-# .\venv\Scripts\activate        # Windows
+### 2. Copy example env file
+```bash
+cp .env.sample .env
+```
 
-# 3. Install dependencies
-pip install -r requirements.txt
 
-# 4. Copy example env file
-cp .env.example .env
-# Edit .env if needed (DB credentials, etc.)
+### 3. Start docker-compose
+```bash
+docker-compose up --build
+```
 
-# 5. Start PostgreSQL and Redis (recommended via Docker)
-docker-compose up -d postgres redis
+### 4. Create admin user & Create schedule for running sync in DB
 
-# 6. Create DB
-docker run --name some-postgres -e POSTGRES_PASSWORD=db_password -e POSTGRES_DB=db_name -e POSTGRES_USER=db_user -p 5432:5432 -d postgres:15
-
-# 7. Apply migrations
-python manage.py migrate
-
-# 8. Start Redis (if not using docker-compose)
-docker run -d -p 6379:6379 --name rick-morty-redis redis
-
-# 9. Start Celery worker (in one terminal)
-celery -A rick_and_morty_api worker -l INFO --pool=solo
-
-# 10. Start Celery Beat (in another terminal)
-celery -A rick_and_morty_api beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
-
-# 11. (One-time) Create sync schedule
-# Via Django Admin (recommended)
-# Visit http://127.0.0.1:8000/admin → Django Celery Beat → Periodic Tasks → Add
-# Name: Sync Rick and Morty data
-# Task: rick_and_morty_api.tasks.run_sync_with_api
-# Crontab: every 24 hours (or your preferred interval)
-
-# 12. Run the development server
-python manage.py runserver
+Visit http://127.0.0.1:8000/admin → Django Celery Beat → Periodic Tasks → Add
+###### Name: Sync Rick and Morty data
+###### Task: rick_and_morty_api.tasks.run_sync_with_api
+###### Crontab: every 24 hours (or your preferred interval)

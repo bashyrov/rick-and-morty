@@ -7,6 +7,7 @@ from rest_framework import generics
 from random import choice
 
 from characters.models import Character
+from characters.pagination import CharacterListSetPagination
 from characters.serializers import CharacterSerializer
 
 
@@ -25,6 +26,7 @@ def get_random_character_view(request: Request) -> Response:
 
 class CharacterListView(generics.ListAPIView):
     serializer_class = CharacterSerializer
+    pagination_class = CharacterListSetPagination
 
     def get_queryset(self):
         qs = Character.objects.all()
